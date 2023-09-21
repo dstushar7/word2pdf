@@ -42,14 +42,26 @@ def convert_file():
     if not file_path:
         return
 
-    output_folder = "temp"
+    # Setting the output folder to be in the Documents/word2pdf directory
+    user_documents_path = os.path.expanduser('~/Documents')
+    output_folder = os.path.join(user_documents_path, 'word2pdf')
+    
+    # Ensure the output folder exists
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+    
+    # Extract the base name of the file (without the path and extension)
+    base_name = os.path.basename(file_path)  # e.g., "document.docx"
+    file_name_without_extension = os.path.splitext(base_name)[0]  # e.g., "document"
+    output_pdf_path = os.path.join(output_folder, f"{file_name_without_extension}.pdf")  # e.g., "Documents/word2pdf/document.pdf"
+    
     try:
         image_paths = word_to_images(file_path, output_folder)
-        output_pdf_path = os.path.join(output_folder, "converted.pdf")
         images_to_pdf(image_paths, output_pdf_path)
         messagebox.showinfo("Success", f"Converted to PDF: {output_pdf_path}")
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {e}")
+
 
 
 app = tk.Tk()
